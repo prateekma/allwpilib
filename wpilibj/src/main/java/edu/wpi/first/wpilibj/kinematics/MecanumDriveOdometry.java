@@ -66,7 +66,7 @@ public class MecanumDriveOdometry {
   public void resetPosition(Pose2d poseMeters, Rotation2d gyroAngle) {
     m_poseMeters = poseMeters;
     m_previousAngle = poseMeters.getRotation();
-    m_gyroOffset = gyroAngle.minus(m_poseMeters.getRotation());
+    m_gyroOffset = m_poseMeters.getRotation().minus(gyroAngle);
   }
 
   /**
