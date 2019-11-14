@@ -44,7 +44,7 @@ public class DifferentialDriveOdometry {
                                    Pose2d initialPoseMeters) {
     m_kinematics = kinematics;
     m_poseMeters = initialPoseMeters;
-    m_gyroOffset = gyroAngle.minus(m_poseMeters.getRotation());
+    m_gyroOffset = m_poseMeters.getRotation().minus(gyroAngle);
     m_previousAngle = initialPoseMeters.getRotation();
   }
 
