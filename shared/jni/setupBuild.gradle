@@ -59,6 +59,9 @@ model {
                     it.buildable = false
                     return
                 }
+                if (it.targetPlatform.operatingSystem.isMacOsX()) {
+                    it.cppCompiler.args.add('-Wno-error=c11-extensions')
+                }
                 if (!project.hasProperty('noWpiutil')) {
                     lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
                 }
@@ -126,6 +129,9 @@ model {
                     return
                 }
                 lib library: "${nativeName}", linkage: 'shared'
+                if (it.targetPlatform.operatingSystem.isMacOsX()) {
+                    it.cppCompiler.args.add('-Wno-error=c11-extensions')
+                }
                 if (!project.hasProperty('noWpiutil')) {
                     lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
                 }
