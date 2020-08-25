@@ -93,6 +93,7 @@ ext {
                     }
                 }
             }
+            it.cppCompiler.args.add('-Wno-error=c11-extensions')
         } else if (it.targetPlatform.operatingSystem.isLinux()) {
             it.sources {
                 cscoreLinuxCpp(CppSourceSet) {
