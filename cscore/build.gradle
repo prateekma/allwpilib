@@ -173,6 +173,10 @@ model {
             "${key}"(NativeExecutableSpec) {
                 targetBuildTypes 'debug'
                 binaries.all {
+                    if (it.targetPlatform.operatingSystem.isMacOsX()) {
+                        it.cppCompiler.args.add('-Wno-error=c11-extensions')
+                    }   
+
                     lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
                     lib library: 'cscore', linkage: 'shared'
                 }
