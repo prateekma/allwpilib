@@ -8,6 +8,7 @@
 #include <imgui.h>
 #include <imgui_stdlib.h>
 
+#include "sysid/Util.h"
 #include "sysid/analysis/AnalysisType.h"
 
 using namespace sysid;
@@ -82,6 +83,7 @@ void Generator::Display() {
   ImGui::SetNextItemWidth(ImGui::GetFontSize() * 13);
   ImGui::Combo("Motor Controller", &m_motorControllerIdx, kMotorControllers,
                IM_ARRAYSIZE(kMotorControllers));
+  CreateTooltip("This is the motor controller that your mechanism uses.");
 
   // Add section for encoders.
   ImGui::Separator();
@@ -152,6 +154,10 @@ void Generator::Display() {
   ImGui::SetNextItemWidth(ImGui::GetFontSize() * 5);
   ImGui::InputDouble("Units Per Rotation", m_pUnitsPerRotation, 0.0, 0.0,
                      "%.3f");
+  CreateTooltip(
+      "The number of units per rotation of the encoder. For example, if your "
+      "encoder is connected directly to the output wheels, this would be wheel "
+      "radius * 2 * pi.");
 
   // Add encoder resolution.
   ImGui::SetNextItemWidth(ImGui::GetFontSize() * 5);
