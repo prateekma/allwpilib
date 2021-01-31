@@ -84,7 +84,8 @@ class TelemetryManager {
   /**
    * Saves a JSON with the stored data at the given location.
    *
-   * @param location The location to save the JSON at.
+   * @param location The location to save the JSON at (this is the folder that
+   *                 should contain the saved JSON).
    */
   void SaveJSON(wpi::StringRef location);
 

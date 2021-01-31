@@ -5,6 +5,9 @@
 #include "sysid/telemetry/TelemetryManager.h"
 
 #include <algorithm>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
 #include <system_error>
 #include <utility>
 
@@ -108,19 +111,29 @@ void TelemetryManager::Update() {
 }
 
 void TelemetryManager::SaveJSON(wpi::StringRef location) {
-  std::error_code ec;
-  wpi::raw_fd_ostream os{location, ec};
-
   // Use the same data for now while things are sorted out.
   m_data["test"] = "Drivetrain";
   m_data["units"] = "Meters";
   m_data["unitsPerRotation"] = 1.0;
 
+  // Get the current date and time. This will be included in the file name.
+  std::time_t t = std::time(nullptr);
+  std::tm tm = *std::localtime(&t);
+
+  std::stringstream ss;
+  ss << location;
+  ss << "/sysid_data";
+  ss << std::put_time(&tm, "%Y%m%d-%H%M");
+  ss << ".json";
+
+  std::error_code ec;
+  wpi::raw_fd_ostream os{ss.str(), ec};
+
   if (ec) {
-    throw std::runtime_error("Cannot write to file: " + location.str());
+    throw std::runtime_error("Cannot write to file: " + ss.str());
   }
 
   os << m_data;
   os.flush();
-  wpi::outs() << "Wrote JSON to: " << location << "\n";
+  wpi::outs() << "Wrote JSON to: " << ss.str() << "\n";
 }

@@ -147,7 +147,7 @@ void Logger::Display() {
   ImGui::SameLine(width * 0.9);
   if (ImGui::Button("Save")) {
     try {
-      m_manager->SaveJSON(m_jsonLocation + "/sysid_data.json");
+      m_manager->SaveJSON(m_jsonLocation);
     } catch (const std::exception& e) {
       ImGui::OpenPopup("Exception Caught!");
       m_exception = e.what();
