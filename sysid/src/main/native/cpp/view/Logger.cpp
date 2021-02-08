@@ -130,6 +130,7 @@ void Logger::Display() {
   CreateTest("Quasistatic Backward", "slow-backward");
   CreateTest("Dynamic Forward", "fast-forward");
   CreateTest("Dynamic Backward", "fast-backward");
+  CreateTest("Trackwidth", "trackwidth");
 
   // Display the path to where the JSON will be saved and a button to select the
   // location.

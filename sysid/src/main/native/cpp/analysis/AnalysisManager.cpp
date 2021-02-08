@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <initializer_list>
 #include <system_error>
+#include <units/angle.h>
 
 #include <wpi/StringMap.h>
 #include <wpi/json.h>
@@ -49,6 +50,8 @@ AnalysisManager::AnalysisManager(wpi::StringRef path, Settings settings)
   // Get the rotation -> output units factor from the JSON.
   m_unit = m_json.at("units").get<std::string>();
   m_factor = m_json.at("unitsPerRotation").get<double>();
+
+  has_trackwidth = m_json.find("trackwidth") != m_json.end();
 
   // Prepare data.
   PrepareData();
@@ -144,10 +147,25 @@ void AnalysisManager::PrepareData() {
       std::make_tuple(Concatenate(sf, {&sb}), Concatenate(ff, {&fb}));
 }
 
+double AnalysisManager::GetDelta(std::vector<RawData> data, int column) {
+
+  return data.back()[column] - data.front()[column];
+
+}
+
 AnalysisManager::Gains AnalysisManager::Calculate() {
   // Calculate feedforward gains from the data.
   auto ff = sysid::CalculateFeedforwardGains(
       m_datasets[kDatasets[*m_settings.dataset]], m_type);
+
+  if (has_trackwidth) {
+    auto trackwidth_data = m_json.at("trackwidth").get<std::vector<RawData>>();
+    double left_distance = GetDelta(trackwidth_data, 5) * m_factor;
+    double right_distance = GetDelta(trackwidth_data, 6) * m_factor;
+    double angle = GetDelta(trackwidth_data, 9);
+
+    std::get<0>(ff).push_back(sysid::CalculateTrackWidth(left_distance, right_distance, units::angle::radian_t {angle}));
+  }
 
   // Create the struct that we need for feedback analysis.
   auto& f = std::get<0>(ff);

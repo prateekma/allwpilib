@@ -201,6 +201,8 @@ void Analyzer::Display() {
         ShowGain("Kg", &m_ff[3]);
       } else if (m_type == analysis::kArm) {
         ShowGain("Kcos", &m_ff[3]);
+      } else if (m_manager->HasTrackwidth()) {
+        ShowGain("Trackwidth", &m_ff[3]);
       }
 
       ShowGain("r-squared", &m_rs);

@@ -5,8 +5,9 @@
 #include "sysid/analysis/TrackWidthAnalysis.h"
 
 #include <cmath>
+#include <stdlib.h>
 
 double sysid::CalculateTrackWidth(double l, double r, units::radian_t accum) {
   // The below comes from solving ω = (vr − vl) / 2r for 2r.
-  return (r - l) / accum.to<double>();
+  return (abs(r) + abs(l)) / abs(accum.to<double>());
 }

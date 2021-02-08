@@ -118,6 +118,7 @@ class TelemetryManager {
   struct TestParameters {
     bool fast;
     bool forward;
+    bool rotate;
     double start;
 
     bool enabled = false;
@@ -146,6 +147,7 @@ class TelemetryManager {
   glass::NetworkTablesHelper m_nt;
   NT_Entry m_autospeed;
   NT_Entry m_telemetry;
+  NT_Entry m_rotate;
   NT_Entry m_fieldInfo;
 };
 }  // namespace sysid

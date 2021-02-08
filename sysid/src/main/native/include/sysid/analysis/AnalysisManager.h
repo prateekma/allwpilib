@@ -17,6 +17,7 @@
 #include "sysid/analysis/FeedbackAnalysis.h"
 #include "sysid/analysis/FeedbackControllerPreset.h"
 #include "sysid/analysis/FeedforwardAnalysis.h"
+#include "sysid/analysis/TrackWidthAnalysis.h"
 
 namespace sysid {
 /**
@@ -126,6 +127,8 @@ class AnalysisManager {
    */
   const std::string& GetUnit() const { return m_unit; }
 
+  bool HasTrackwidth() { return has_trackwidth; }
+
   /**
    * Returns the factor (a.k.a. units per rotation) for analysis.
    *
@@ -189,6 +192,8 @@ class AnalysisManager {
    */
   void PrepareDataDrivetrain(wpi::StringMap<std::vector<RawData>>&& data);
 
+  double GetDelta(std::vector<RawData> data, int column);
+
   // This is used to store the various datasets (i.e. Combined, Forward,
   // Backward, etc.)
   wpi::json m_json;
@@ -203,5 +208,6 @@ class AnalysisManager {
   AnalysisType m_type;
   double m_factor;
   std::string m_unit;
+  bool has_trackwidth;
 };
 }  // namespace sysid

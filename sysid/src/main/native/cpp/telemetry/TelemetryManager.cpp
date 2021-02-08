@@ -21,6 +21,7 @@ TelemetryManager::TelemetryManager(Settings settings, NT_Inst instance)
       m_nt(instance),
       m_autospeed(m_nt.GetEntry("/SmartDashboard/SysIdAutoSpeed")),
       m_telemetry(m_nt.GetEntry("/SmartDashboard/SysIdTelemetry")),
+      m_rotate(m_nt.GetEntry("/SmartDashboard/SysIdRotate")),
       m_fieldInfo(m_nt.GetEntry("/FMSInfo/FMSControlData")) {
   // Add listeners for our readable entries.
   m_nt.AddListener(m_telemetry);
@@ -29,7 +30,7 @@ TelemetryManager::TelemetryManager(Settings settings, NT_Inst instance)
 
 void TelemetryManager::BeginTest(wpi::StringRef name) {
   // Create a new test params instance for this test.
-  m_params = TestParameters{name.startswith("fast"), name.endswith("forward"),
+  m_params = TestParameters{name.startswith("fast"), name.endswith("forward"), name.startswith("track"),
                             wpi::Now() * 1E-6};
 
   // Add this test to the list of running tests and set the running flag.
@@ -101,6 +102,7 @@ void TelemetryManager::Update() {
              : ((now - m_params.start) * *m_settings.quasistaticRampRate)) *
         (m_params.forward ? 1 : -1);
     nt::SetEntryValue(m_autospeed, nt::Value::MakeDouble(volts / 12.0));
+    nt::SetEntryValue(m_rotate, nt::Value::MakeBoolean(m_params.rotate));
   }
 
   // If the robot was previously enabled, but isn't now, it means that we should
