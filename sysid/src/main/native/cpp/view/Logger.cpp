@@ -11,6 +11,7 @@
 #include <imgui_internal.h>
 #include <imgui_stdlib.h>
 #include <ntcore_cpp.h>
+#include <units/angle.h>
 #include <wpi/raw_ostream.h>
 #include <wpigui.h>
 
@@ -98,14 +99,22 @@ void Logger::Display() {
         m_opened = text;
       }
       if (m_opened == text && ImGui::BeginPopupModal("Warning")) {
-        ImGui::Text(
-            "Please enable the robot in autonomous mode, and then "
-            "disable it "
-            "before it runs out of space. \n Note: The robot will "
-            "continue "
-            "to move until you disable it - It is your "
-            "responsibility to "
-            "ensure it does not hit anything!");
+        if (m_manager->IsActive()) {
+          ImGui::Text(
+              "Please enable the robot in autonomous mode, and then "
+              "disable it "
+              "before it runs out of space. \n Note: The robot will "
+              "continue "
+              "to move until you disable it - It is your "
+              "responsibility to "
+              "ensure it does not hit anything!");
+        } else {
+          ImGui::Text(
+              "The primary encoder has reported: %.3f units.\n"
+              "The secondary encoder has reported: %.3f units.\n"
+              "The gyro has reported: %.3f degrees.\n",
+              m_primary_encoder, m_secondary_encoder, m_gyro);
+        }
 
         const char* button = m_manager->IsActive() ? "End Test" : "Close";
         if (ImGui::Button(button)) {
@@ -131,6 +140,13 @@ void Logger::Display() {
   CreateTest("Dynamic Forward", "fast-forward");
   CreateTest("Dynamic Backward", "fast-backward");
   CreateTest("Trackwidth", "trackwidth");
+
+  m_manager->RegisterCancellationCallback(
+      [&](double primary, double secondary, double gyro) {
+        m_primary_encoder = primary;
+        m_secondary_encoder = secondary;
+        m_gyro = units::convert<units::radian, units::degree>(gyro);
+      });
 
   // Display the path to where the JSON will be saved and a button to select the
   // location.

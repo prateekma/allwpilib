@@ -7,8 +7,8 @@
 #include <algorithm>
 #include <initializer_list>
 #include <system_error>
-#include <units/angle.h>
 
+#include <units/angle.h>
 #include <wpi/StringMap.h>
 #include <wpi/json.h>
 #include <wpi/raw_istream.h>
@@ -148,9 +148,7 @@ void AnalysisManager::PrepareData() {
 }
 
 double AnalysisManager::GetDelta(std::vector<RawData> data, int column) {
-
   return data.back()[column] - data.front()[column];
-
 }
 
 AnalysisManager::Gains AnalysisManager::Calculate() {
@@ -164,7 +162,8 @@ AnalysisManager::Gains AnalysisManager::Calculate() {
     double right_distance = GetDelta(trackwidth_data, 6) * m_factor;
     double angle = GetDelta(trackwidth_data, 9);
 
-    std::get<0>(ff).push_back(sysid::CalculateTrackWidth(left_distance, right_distance, units::angle::radian_t {angle}));
+    std::get<0>(ff).push_back(sysid::CalculateTrackWidth(
+        left_distance, right_distance, units::angle::radian_t{angle}));
   }
 
   // Create the struct that we need for feedback analysis.
@@ -273,7 +272,8 @@ void AnalysisManager::TrimStepVoltageData(std::vector<PreparedData>* data) {
     }
 
     // If we were in caution for three iterations, we can exit.
-    if (caution && (i - idx) == 3)
+    if (caution && (i - idx) == 3) {
       break;
+    }
   }
 }

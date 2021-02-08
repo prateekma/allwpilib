@@ -77,7 +77,7 @@ class TelemetryManager {
    * @param callback The function to be called upon cancellation of a test.
    */
   void RegisterCancellationCallback(
-      std::function<void(double, double)> callback) {
+      std::function<void(double, double, double)> callback) {
     m_callbacks.emplace_back(std::move(callback));
   }
 
@@ -141,7 +141,7 @@ class TelemetryManager {
   wpi::json m_data;
 
   // Cancellation callbacks.
-  wpi::SmallVector<std::function<void(double, double)>, 1> m_callbacks;
+  wpi::SmallVector<std::function<void(double, double, double)>, 1> m_callbacks;
 
   // NetworkTables instance and entries.
   glass::NetworkTablesHelper m_nt;

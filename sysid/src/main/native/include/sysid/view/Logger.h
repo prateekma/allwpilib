@@ -31,6 +31,10 @@ class Logger : public glass::View {
   double m_quasistatic = 0.25;
   double m_step = 7.0;
 
+  double m_primary_encoder = 0;
+  double m_secondary_encoder = 0;
+  double m_gyro = 0;
+
   std::unique_ptr<TelemetryManager> m_manager =
       std::make_unique<TelemetryManager>(
           TelemetryManager::Settings{&m_quasistatic, &m_step});
