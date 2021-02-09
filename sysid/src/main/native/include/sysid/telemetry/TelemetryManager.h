@@ -87,7 +87,7 @@ class TelemetryManager {
    * @param location The location to save the JSON at (this is the folder that
    *                 should contain the saved JSON).
    */
-  void SaveJSON(wpi::StringRef location);
+  std::string SaveJSON(wpi::StringRef location);
 
   /**
    * Returns whether a test is currently running.

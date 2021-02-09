@@ -114,7 +114,7 @@ void TelemetryManager::Update() {
   }
 }
 
-void TelemetryManager::SaveJSON(wpi::StringRef location) {
+std::string TelemetryManager::SaveJSON(wpi::StringRef location) {
   // Use the same data for now while things are sorted out.
   m_data["test"] = "Drivetrain";
   m_data["units"] = "Meters";
@@ -140,4 +140,5 @@ void TelemetryManager::SaveJSON(wpi::StringRef location) {
   os << m_data;
   os.flush();
   wpi::outs() << "Wrote JSON to: " << ss.str() << "\n";
+  return ss.str();
 }
