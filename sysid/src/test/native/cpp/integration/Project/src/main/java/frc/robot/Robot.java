@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
@@ -103,6 +104,17 @@ public class Robot extends TimedRobot {
   @Override
   public void simulationPeriodic() {
     m_drive.simulationPeriodic();
+    boolean enable = SmartDashboard.getBoolean("SysIdRun", false);
+    if (enable) {
+      DriverStationSim.setAutonomous(true);
+      DriverStationSim.setEnabled(true);
+    } else {
+      DriverStationSim.setEnabled(false);
+    }
+    
+    if (SmartDashboard.getBoolean("SysIdKill", false)) {
+      System.exit(0);
+    }
   }
 }
 

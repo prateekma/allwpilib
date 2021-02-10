@@ -129,6 +129,7 @@ std::string TelemetryManager::SaveJSON(wpi::StringRef location) {
   ss << "/sysid_data";
   ss << std::put_time(&tm, "%Y%m%d-%H%M");
   ss << ".json";
+  std::string out_path = ss.str();
 
   std::error_code ec;
   wpi::raw_fd_ostream os{ss.str(), ec};
@@ -139,6 +140,7 @@ std::string TelemetryManager::SaveJSON(wpi::StringRef location) {
 
   os << m_data;
   os.flush();
-  wpi::outs() << "Wrote JSON to: " << ss.str() << "\n";
-  return ss.str();
+  
+  wpi::outs() << "Wrote JSON to: " << out_path  << "\n";
+  return out_path;
 }
