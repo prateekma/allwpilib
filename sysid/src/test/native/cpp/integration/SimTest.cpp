@@ -8,12 +8,14 @@
 #include <thread>
 
 #include <wpi/StringRef.h>
+#include <wpi/FileSystem.h>
+#include <wpi/SmallString.h>
 
 #include "gtest/gtest.h"
 #include "sysid/analysis/AnalysisManager.h"
 #include "sysid/telemetry/TelemetryManager.h"
 
-namespace fs = std::filesystem;
+namespace fs = wpi::sys::fs;
 
 #include <ntcore_cpp.h>
 #include <glass/networktables/NetworkTablesHelper.h>
@@ -24,13 +26,15 @@ using namespace std::chrono_literals;
 std::string getCodePath() {
   std::string wpilib_name = "allwpilib";
 
+  wpi::SmallString<0> path;
+  fs::current_path(path);
+
   // find build path
-  std::string curr_path{fs::current_path()};
-  size_t wpilib_dir = curr_path.find(wpilib_name);
+  size_t wpilib_dir = path.find(wpilib_name);
   wpilib_dir += (wpilib_name.length());
-  std::string build_path = curr_path.substr(0, wpilib_dir) +
+  wpi::Twine build_path = path.substr(0, wpilib_dir) +
                            "'/sysid/src/test/native/cpp/integration/Project'";
-  return build_path;
+  return build_path.str();
 }
 
 void RunTest(TelemetryManager& m_manager, NT_Inst m_client, NT_Entry m_enable,
@@ -74,10 +78,9 @@ class FullTest : public ::testing::Test {
         m_enable(m_nt.GetEntry("/SmartDashboard/SysIdRun")) {
     std::string command = "./gradlew simulatejava ";
     std::string jdk = std::getenv("HOME");
-    jdk += ((jdk.back() == fs::path::preferred_separator ? "" : "/")) +
-           std::string("wpilib/2021/jdk");
+    jdk += std::string("/wpilib/2021/jdk");
 
-    if (fs::exists(fs::status(jdk))) {
+    if (fs::exists(jdk)) {
       command += "-Dorg.gradle.java.home=" + jdk + " 2>&1";
     }
 
@@ -133,7 +136,8 @@ TEST_F(FullTest, IntegrationTestDrive) {
   RunTest(m_manager, m_client, m_enable, "fast-backward");
   RunTest(m_manager, m_client, m_enable, "trackwidth");
 
-  std::string save_path{fs::current_path()};
+  wpi::SmallString<0> save_path;
+  fs::current_path(save_path);
 
   std::string out_path{m_manager.SaveJSON(save_path)};
 
