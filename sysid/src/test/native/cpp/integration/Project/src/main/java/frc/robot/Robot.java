@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
@@ -47,7 +46,7 @@ public class Robot extends TimedRobot {
             new Pose2d(6, 4, new Rotation2d()),
             new TrajectoryConfig(2, 2));
 
-            m_drive.resetOdometry(new Pose2d(2, 2, new Rotation2d()));
+    m_drive.resetOdometry(new Pose2d(2, 2, new Rotation2d()));
   }
 
   @Override
@@ -56,9 +55,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousInit() {
-
-  }
+  public void autonomousInit() {}
 
   @Override
   public void autonomousPeriodic() {
@@ -67,15 +64,20 @@ public class Robot extends TimedRobot {
     m_drive.drivePercent((rotate ? -1 : 1) * speed, speed);
 
     double voltage = RobotController.getInputVoltage();
-    SmartDashboard.putNumberArray("SysIdTelemetry", new double[] {
-      Timer.getFPGATimestamp(),
-      voltage,
-      speed,
-      speed * voltage, speed * voltage,
-      m_drive.m_leftEncoder.getDistance(), m_drive.m_rightEncoder.getDistance(),
-      m_drive.m_leftEncoder.getRate(), m_drive.m_rightEncoder.getRate(),
-      m_drive.getGyro()
-    });
+    SmartDashboard.putNumberArray(
+        "SysIdTelemetry",
+        new double[] {
+          Timer.getFPGATimestamp(),
+          voltage,
+          speed,
+          speed * voltage,
+          speed * voltage,
+          m_drive.m_leftEncoder.getDistance(),
+          m_drive.m_rightEncoder.getDistance(),
+          m_drive.m_leftEncoder.getRate(),
+          m_drive.m_rightEncoder.getRate(),
+          m_drive.getGyro()
+        });
   }
 
   @Override
