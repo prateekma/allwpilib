@@ -13,14 +13,7 @@
 #include "sysid/analysis/AnalysisManager.h"
 #include "sysid/telemetry/TelemetryManager.h"
 
-#if defined(__GNUG__) && !defined(__clang__) && __GNUC__ < 8
-#include <experimental/filesystem>
-
-namespace fs = std::experimental::filesystem;
-#else
-#include <filesystem>
 namespace fs = std::filesystem;
-#endif
 
 #include <ntcore_cpp.h>
 #include <glass/networktables/NetworkTablesHelper.h>
