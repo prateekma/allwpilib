@@ -57,7 +57,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    
+
   }
 
   @Override
@@ -65,7 +65,7 @@ public class Robot extends TimedRobot {
     double speed = SmartDashboard.getNumber("SysIdAutoSpeed", 0.0);
     boolean rotate = SmartDashboard.getBoolean("SysIdRotate", false);
     m_drive.drivePercent((rotate ? -1 : 1) * speed, speed);
-    
+
     double voltage = RobotController.getInputVoltage();
     SmartDashboard.putNumberArray("SysIdTelemetry", new double[] {
       Timer.getFPGATimestamp(),
@@ -111,10 +111,9 @@ public class Robot extends TimedRobot {
     } else {
       DriverStationSim.setEnabled(false);
     }
-    
+
     if (SmartDashboard.getBoolean("SysIdKill", false)) {
       System.exit(0);
     }
   }
 }
-

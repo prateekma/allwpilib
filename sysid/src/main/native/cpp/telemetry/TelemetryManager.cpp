@@ -140,7 +140,7 @@ std::string TelemetryManager::SaveJSON(wpi::StringRef location) {
 
   os << m_data;
   os.flush();
-  
-  wpi::outs() << "Wrote JSON to: " << out_path  << "\n";
+
+  wpi::outs() << "Wrote JSON to: " << out_path << "\n";
   return out_path;
 }
