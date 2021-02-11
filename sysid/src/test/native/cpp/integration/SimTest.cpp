@@ -34,7 +34,7 @@ std::string getCodePath() {
   size_t wpilib_dir = path.find(wpilib_name);
   wpilib_dir += (wpilib_name.length());
   wpi::Twine build_path = path.substr(0, wpilib_dir) +
-                           "'/sysid/src/test/native/cpp/integration/Project'";
+                           "/sysid/src/test/native/cpp/integration/Project";
   return build_path.str();
 }
 
