@@ -86,12 +86,17 @@ class FullTest : public ::testing::Test {
     }
 
     std::string savePath = getCodePath();
+    std::cout << "Got code path" << std::endl;
     #if _WIN32 || _WIN64
     std::string out_command = ("cd " + savePath + ";" + command); 
     #else
     std::string out_command = ("cd " + savePath + ";" + "chmod +x gradlew;" + command); 
     #endif
-    std::system(out_command.c_str());
+    std::cout << "Running command" << std::endl;
+    int result = std::system(out_command.c_str());
+    if (result != 0) {
+      throw std::runtime_error("Simluation failed");
+    }
     nt::StartClient(m_client, "localhost", NT_DEFAULT_PORT);
 
     //void* temp_data;
