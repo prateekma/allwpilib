@@ -27,7 +27,7 @@ using namespace std::chrono_literals;
 std::string getCodePath() {
   std::string wpilib_name = "allwpilib";
 
-  wpi::SmallString<0> path;
+  wpi::SmallString<128> path;
   fs::current_path(path);
 
   // find build path
@@ -86,8 +86,11 @@ class FullTest : public ::testing::Test {
     }
 
     std::string savePath = getCodePath();
+    #if _WIN32 || _WIN64
+    std::string out_command = ("cd " + savePath + ";" + command); 
+    #else
     std::string out_command = ("cd " + savePath + ";" + "chmod +x gradlew;" + command); 
-
+    #endif
     std::system(out_command.c_str());
     nt::StartClient(m_client, "localhost", NT_DEFAULT_PORT);
 
