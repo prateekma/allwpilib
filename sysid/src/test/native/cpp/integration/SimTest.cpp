@@ -86,7 +86,8 @@ class FullTest : public ::testing::Test {
     }
 
     std::string savePath = getCodePath();
-    std::cout << "Got code path" << std::endl;
+    std::cout << "Got code path: " << savePath << std::endl;
+    std::cout << "Exists? " << fs::exists(savePath) << std::endl;
     #if _WIN32 || _WIN64
     std::string out_command = ("cd " + savePath + ";" + command); 
     #else
