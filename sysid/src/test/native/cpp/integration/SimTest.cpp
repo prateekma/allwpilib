@@ -86,11 +86,9 @@ class FullTest : public ::testing::Test {
     }
 
     std::string savePath = getCodePath();
+    std::string out_command = ("cd " + savePath + ";" + "chmod +x gradlew;" + command); 
 
-    std::system(
-        std::string("cd " + savePath + ";" + "chmod +x gradlew;" + command)
-            .c_str());
-
+    std::system(out_command.c_str());
     nt::StartClient(m_client, "localhost", NT_DEFAULT_PORT);
 
     //void* temp_data;
