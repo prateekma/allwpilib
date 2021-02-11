@@ -18,6 +18,7 @@
 namespace fs = wpi::sys::fs;
 
 #include <ntcore_cpp.h>
+#include <networktables/NetworkTableInstance.h>
 #include <glass/networktables/NetworkTablesHelper.h>
 
 using namespace sysid;
@@ -92,14 +93,11 @@ class FullTest : public ::testing::Test {
 
     nt::StartClient(m_client, "localhost", NT_DEFAULT_PORT);
 
-    void* temp_data;
+    //void* temp_data;
 
-    NT_AddLogger(
-        m_client, &temp_data,
-        [](void* data, const struct NT_LogMessage* msg) {}, 0, 255);
+    //nt::NetworkTableInstance::AddLogger([](const nt::LogMessage& msg) {}, 0, 255);
 
-    while (connections == 0) {
-      NT_GetConnections(m_client, &connections);
+    while (!nt::IsConnected(m_client)) {
     }
     // std::this_thread::sleep_for(5s);
 
@@ -111,8 +109,7 @@ class FullTest : public ::testing::Test {
     nt::SetEntryValue(m_kill, nt::Value::MakeBoolean(true));
     // nt::Flush(m_client);
 
-    while (connections != 0) {
-      NT_GetConnections(m_client, &connections);
+    while (nt::IsConnected(m_client)) {
     }
   }
 
@@ -121,7 +118,7 @@ class FullTest : public ::testing::Test {
 
   NT_Entry m_kill;
   NT_Entry m_enable;
-  size_t connections{0};
+  //size_t connections{0};
 };
 
 TEST_F(FullTest, IntegrationTestDrive) {
