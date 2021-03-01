@@ -5,8 +5,10 @@
 #include "Drivetrain.h"
 
 #include <frc2/Timer.h>
+#include <iostream>
 
 #include "ExampleGlobalMeasurementSensor.h"
+#include "frc/smartdashboard/SmartDashboard.h"
 
 void Drivetrain::Drive(units::meters_per_second_t xSpeed,
                        units::meters_per_second_t ySpeed,
@@ -24,13 +26,15 @@ void Drivetrain::Drive(units::meters_per_second_t xSpeed,
   m_frontRight.SetDesiredState(fr);
   m_backLeft.SetDesiredState(bl);
   m_backRight.SetDesiredState(br);
+
+  frc::SmartDashboard::PutData("Field", &m_field);
 }
 
 void Drivetrain::UpdateOdometry() {
   m_poseEstimator.Update(m_gyro.GetRotation2d(), m_frontLeft.GetState(),
                          m_frontRight.GetState(), m_backLeft.GetState(),
                          m_backRight.GetState());
-
+  
   // Also apply vision measurements. We use 0.3 seconds in the past as an
   // example -- on a real robot, this must be calculated based either on latency
   // or timestamps.
@@ -38,4 +42,13 @@ void Drivetrain::UpdateOdometry() {
       ExampleGlobalMeasurementSensor::GetEstimatedGlobalPose(
           m_poseEstimator.GetEstimatedPosition()),
       frc2::Timer::GetFPGATimestamp() - 0.3_s);
+
+  m_field.SetRobotPose(m_poseEstimator.GetEstimatedPosition());
+}
+
+void Drivetrain::SimulationPeriodic() {
+  m_frontLeft.SimulationPeriodic();
+  m_frontRight.SimulationPeriodic();
+  m_backLeft.SimulationPeriodic();
+  m_backRight.SimulationPeriodic();
 }

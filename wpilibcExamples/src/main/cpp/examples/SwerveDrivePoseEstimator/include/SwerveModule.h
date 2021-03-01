@@ -14,13 +14,24 @@
 #include <units/time.h>
 #include <units/velocity.h>
 #include <units/voltage.h>
+#include <limits>
 #include <wpi/math>
+#include "frc/filters/LinearDigitalFilter.h"
+#include "frc/simulation/EncoderSim.h"
+#include "frc/simulation/FlywheelSim.h"
+#include "frc/simulation/SingleJointedArmSim.h"
+#include "frc/system/plant/DCMotor.h"
+#include "frc/system/plant/LinearSystemId.h"
+#include "units/angle.h"
 
 class SwerveModule {
  public:
-  SwerveModule(int driveMotorChannel, int turningMotorChannel);
+  SwerveModule(int driveMotorChannel, int turningMotorChannel,
+               int encoderChannel);
   frc::SwerveModuleState GetState() const;
   void SetDesiredState(const frc::SwerveModuleState& state);
+
+  void SimulationPeriodic();
 
  private:
   static constexpr auto kWheelRadius = 0.0508_m;
@@ -34,8 +45,29 @@ class SwerveModule {
   frc::PWMSparkMax m_driveMotor;
   frc::PWMSparkMax m_turningMotor;
 
-  frc::Encoder m_driveEncoder{0, 1};
-  frc::Encoder m_turningEncoder{2, 3};
+  frc::Encoder m_driveEncoder;
+  frc::Encoder m_turningEncoder;
+
+  frc::sim::EncoderSim m_driveEncoderSim{m_driveEncoder};
+  frc::sim::EncoderSim m_turningEncoderSim{m_turningEncoder};
+
+  // We can use a single-jointed arm sim (without gravity) to emulate how the
+  // swerve module will rotate.
+  frc::sim::SingleJointedArmSim m_moduleRotationSim{
+      frc::DCMotor::NEO(1),
+      28.38,
+      1_kg_sq_m,
+      6_in,
+      -std::numeric_limits<double>::max() * 1_rad,
+      std::numeric_limits<double>::max() * 1_rad,
+      3_kg,
+      false};
+
+  // We can use a flywheel sim to emulate the driving portion.
+  frc::sim::FlywheelSim m_driveSim{
+      frc::LinearSystemId::IdentifyVelocitySystem<units::meter>(
+          1.98_V / 1_mps, 0.1_V / 1_mps_sq),
+      frc::DCMotor::NEO(1), 7.29};
 
   frc2::PIDController m_drivePIDController{1.0, 0, 0};
   frc::ProfiledPIDController<units::radians> m_turningPIDController{

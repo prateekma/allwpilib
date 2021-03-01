@@ -15,7 +15,12 @@ class Robot : public frc::TimedRobot {
     m_swerve.UpdateOdometry();
   }
 
-  void TeleopPeriodic() override { DriveWithJoystick(true); }
+  void TeleopPeriodic() override {
+    DriveWithJoystick(true);
+    m_swerve.UpdateOdometry();
+  }
+
+  void SimulationPeriodic() override { m_swerve.SimulationPeriodic(); }
 
  private:
   frc::XboxController m_controller{0};
@@ -46,10 +51,10 @@ class Robot : public frc::TimedRobot {
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
     const auto rot = -m_rotLimiter.Calculate(
-                         m_controller.GetX(frc::GenericHID::kRightHand)) *
+                         m_controller.GetTriggerAxis(frc::GenericHID::kLeftHand)) *
                      Drivetrain::kMaxAngularSpeed;
 
-    m_swerve.Drive(xSpeed, ySpeed, rot, fieldRelative);
+    m_swerve.Drive(xSpeed, ySpeed, rot, false);
   }
 };
 

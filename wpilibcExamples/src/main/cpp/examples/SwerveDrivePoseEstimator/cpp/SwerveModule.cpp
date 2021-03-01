@@ -5,11 +5,17 @@
 #include "SwerveModule.h"
 
 #include <frc/geometry/Rotation2d.h>
+#include <iostream>
 #include <wpi/math>
+#include "frc/RobotController.h"
+#include "wpi/raw_ostream.h"
 
 SwerveModule::SwerveModule(const int driveMotorChannel,
-                           const int turningMotorChannel)
-    : m_driveMotor(driveMotorChannel), m_turningMotor(turningMotorChannel) {
+                           const int turningMotorChannel, int encoderChannel)
+    : m_driveMotor(driveMotorChannel),
+      m_turningMotor(turningMotorChannel),
+      m_driveEncoder(encoderChannel, encoderChannel + 1),
+      m_turningEncoder(encoderChannel + 2, encoderChannel + 3) {
   // Set the distance per pulse for the drive encoder. We can simply use the
   // distance traveled for one rotation of the wheel divided by the encoder
   // resolution.
@@ -54,4 +60,22 @@ void SwerveModule::SetDesiredState(
   // Set the motor outputs.
   m_driveMotor.SetVoltage(units::volt_t{driveOutput} + driveFeedforward);
   m_turningMotor.SetVoltage(units::volt_t{turnOutput} + turnFeedforward);
+}
+
+void SwerveModule::SimulationPeriodic() {
+  // Set model inputs.
+  m_moduleRotationSim.SetInputVoltage(
+      m_turningMotor.Get() * frc::RobotController::GetBatteryVoltage());
+  m_driveSim.SetInputVoltage(m_driveMotor.Get() *
+                             frc::RobotController::GetBatteryVoltage());
+
+  // Update models.
+  m_moduleRotationSim.Update(20_ms);
+  m_driveSim.Update(20_ms);
+
+  // Set encoder measurements.
+  m_turningEncoderSim.SetDistance(m_moduleRotationSim.GetAngle().to<double>());
+  std::cout << m_turningEncoder.GetDistance() << std::endl;
+  m_turningEncoderSim.SetRate(m_moduleRotationSim.GetVelocity().to<double>());
+  m_driveEncoderSim.SetRate(m_driveSim.GetAngularVelocity().to<double>());
 }
