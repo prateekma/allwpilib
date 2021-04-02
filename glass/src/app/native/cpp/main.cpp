@@ -7,6 +7,7 @@
 #include <GLFW/glfw3.h>
 #include <imgui.h>
 #include <ntcore_cpp.h>
+#include <sentry.h>
 #include <wpi/SmallString.h>
 #include <wpigui.h>
 
@@ -129,6 +130,13 @@ int __stdcall WinMain(void* hInstance, void* hPrevInstance, char* pCmdLine,
 #else
 int main() {
 #endif
+  // Configure and initialize Sentry
+  sentry_options_t* options = sentry_options_new();
+  sentry_options_set_database_path(options,
+                                   "/Users/prateekma/wpilib/2021/dumps");
+
+  sentry_init(options);
+
   gui::CreateContext();
   glass::CreateContext();
 
@@ -208,6 +216,10 @@ int main() {
     }
   });
 
+  // Crash
+  std::vector<double> vec;
+  vec.reserve(-1);
+
   gui::Initialize("Glass - DISCONNECTED", 1024, 768);
   gui::Main();
 
@@ -218,4 +230,6 @@ int main() {
 
   glass::DestroyContext();
   gui::DestroyContext();
+
+  sentry_shutdown();
 }

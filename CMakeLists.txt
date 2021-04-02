@@ -184,6 +184,7 @@ if (WITH_WPIMATH)
 endif()
 
 if (WITH_GUI)
+    add_subdirectory(sentry-native)
     add_subdirectory(imgui)
     add_subdirectory(wpigui)
     add_subdirectory(glass)

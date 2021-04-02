@@ -65,12 +65,12 @@ endif()
 
 add_executable(glass ${glass_src} ${glass_resources_src} ${glass_rc} ${APP_ICON_MACOSX})
 wpilib_link_macos_gui(glass)
-target_link_libraries(glass libglassnt libglass)
+target_link_libraries(glass libglassnt libglass sentry)
 
 if (WIN32)
     set_target_properties(glass PROPERTIES WIN32_EXECUTABLE YES)
 elseif(APPLE)
-    set_target_properties(glass PROPERTIES MACOSX_BUNDLE YES OUTPUT_NAME "Glass")
+    # set_target_properties(glass PROPERTIES MACOSX_BUNDLE YES OUTPUT_NAME "Glass")
 endif()
 
 #if (MSVC OR FLAT_INSTALL_WPILIB)
