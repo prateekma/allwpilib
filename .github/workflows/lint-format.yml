@@ -71,4 +71,3 @@ jobs:
         run: wpiformat -list-changed-files
       - name: Run clang-tidy
         run: wpiformat -clang 12 -no-format -tidy-changed -compile-commands=build-cmake
-
