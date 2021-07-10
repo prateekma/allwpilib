@@ -33,6 +33,16 @@ jobs:
         run: wpiformat -clang 12
       - name: Check Output
         run: git --no-pager diff --exit-code HEAD
+      - name: Create patch
+        if: ${{ failure() }}
+        run: git diff HEAD > wpiformat.patch
+      - name: Upload patch
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: Format Patch
+          path: wpiformat.patch
+
   tidy:
     name: "clang-tidy"
     runs-on: ubuntu-latest
